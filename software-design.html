@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Software Design - Integrated Inventory Management</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 </head>
 <body>
     <header>
@@ -34,10 +35,10 @@
             </p>
             
             <h3>Responsive Layout Logic</h3>
-            <pre><code>
-// Fix for tablet layout: restrict width of input fields and buttons
-if (getResources().getConfiguration().screenWidthDp >= 600) {
-    int widthPixels = (int) (400 * getResources().getDisplayMetrics().density);
+            <pre><code class="language-java">
+<span class="hljs-comment">// Fix for tablet layout: restrict width of input fields and buttons</span>
+<span class="hljs-keyword">if</span> (getResources().getConfiguration().screenWidthDp &gt;= <span class="hljs-number">600</span>) {
+    <span class="hljs-type">int</span> <span class="hljs-variable">widthPixels</span> <span class="hljs-operator">=</span> (<span class="hljs-type">int</span>) (<span class="hljs-number">400</span> * getResources().getDisplayMetrics().density);
     adjustViewWidth(itemNameEditText, widthPixels);
     adjustViewWidth(itemQuantityEditText, widthPixels);
     adjustViewWidth(requiredItemQuantityEditText, widthPixels);
@@ -46,17 +47,17 @@ if (getResources().getConfiguration().screenWidthDp >= 600) {
     adjustViewWidth(deleteItemButton, widthPixels);
 }
 
-/**
+<span class="hljs-comment">/**
  * Helper method to adjust view width and center it for tablets.
- */
-private void adjustViewWidth(View view, int width) {
-    ViewGroup.LayoutParams params = view.getLayoutParams();
-    if (params != null) {
+ */</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">adjustViewWidth</span><span class="hljs-params">(View view, <span class="hljs-type">int</span> width)</span> {
+    <span class="hljs-type">ViewGroup.LayoutParams</span> <span class="hljs-variable">params</span> <span class="hljs-operator">=</span> view.getLayoutParams();
+    <span class="hljs-keyword">if</span> (params != <span class="hljs-literal">null</span>) {
         params.width = width;
-        if (params instanceof android.widget.LinearLayout.LayoutParams) {
+        <span class="hljs-keyword">if</span> (params <span class="hljs-keyword">instanceof</span> android.widget.LinearLayout.LayoutParams) {
             ((android.widget.LinearLayout.LayoutParams) params).gravity = android.view.Gravity.CENTER_HORIZONTAL;
         }
-        // ... additional layout params handling
+        <span class="hljs-comment">// ... additional layout params handling</span>
         view.setLayoutParams(params);
     }
 }
