@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Databases - Integrated Inventory Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Databases</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="code-review.html">Code Review</a></li>
+                    <li><a href="software-design.html">Software Design</a></li>
+                    <li><a href="algorithms.html">Algorithms</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Course Outcome: Data Integrity and Management</h2>
+            <p>
+                <strong>Outcome:</strong> Implement and analyze database solutions to ensure data integrity and security.
+            </p>
+            <p>
+                The application relies on a local SQLite database. I enhanced the data management layer by implementing strict validation logic 
+                before any Create or Update operation. In <code>AddItemActivity.java</code>, the application checks for duplicate item names 
+                and ensures numeric values are valid before committing changes to the database, preventing data corruption.
+            </p>
+
+            <h3>Secure Database Operations</h3>
+            <pre><code>
+/**
+ * Handles the process of adding or updating an item in the database.
+ */
+private void addItemToInventory() {
+    final String itemName = itemNameEditText.getText().toString().trim();
+    // ... parsing logic ...
+
+    // Check for duplicate name to ensure data integrity
+    final InventoryItem existingItem = inventoryViewModel.getItemByName(itemName);
+    if (existingItem != null) {
+        if (editingItemId == -1) {
+            // Adding new item, name taken
+            Toast.makeText(this, "Item name already exists...", Toast.LENGTH_LONG).show();
+            return;
+        } else if (existingItem.getId() != editingItemId) {
+            // Editing item, name taken by another item
+            Toast.makeText(this, "Item name already exists.", Toast.LENGTH_LONG).show();
+            return;
+        }
+    }
+
+    boolean success = false;
+    if (editingItemId != -1) {
+        // **EDIT MODE** - Update existing item details
+        success = inventoryViewModel.updateItemDetails(editingItemId, itemName, itemQuantity, requiredInventory);
+    } else {
+        // **ADD MODE** - Add a new item
+        success = inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
+    }
+    // ... UI feedback ...
+}
+            </code></pre>
+            <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%203%3A%20Databases" class="btn">View Full Source</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ePortfolio. Hosted on GitHub Pages.</p>
+    </footer>
+</body>
+</html>
