@@ -61,6 +61,39 @@ private void updateSortIndicators() {
     if (targetHeader != null) targetHeader.setText(targetHeader.getText() + arrow);
 }
             </code></pre>
+
+            <h3>Predictive Burn Rate Analysis</h3>
+            <p>
+                To further demonstrate algorithmic thinking, I implemented a "burn rate" calculator that forecasts inventory depletion. 
+                Instead of relying solely on static low-stock thresholds, this feature uses a sliding window analysis to compute the rate of consumption per minute over the last 24 hours.
+            </p>
+            <p>
+                <strong>Design & Trade-offs:</strong> I utilized SQL aggregation (<code>SUM</code> with <code>GROUP BY</code>) on the <code>usage_log</code> table to compute consumption rates. 
+                This approach was chosen over in-memory processing to minimize the application's memory footprint and leverage the database engine's optimization, which is crucial as the log history grows.
+            </p>
+            <p>
+                <strong>Validation & Edge Cases:</strong> The algorithm was validated by simulating different usage patterns, ensuring that sudden spikes are smoothed out by the 24-hour window and that sparse logs (low usage) do not trigger false positives. 
+                The logic defaults to a safe state when usage data is insufficient, preventing erroneous alerts.
+            </p>
+
+            <pre><code class="language-java">
+// SQL Aggregation: Calculate total consumption per item in the last 24 hours
+String usageQuery = "SELECT item_id, SUM(change_amount) FROM usage_log " +
+        "WHERE change_amount < 0 AND timestamp > ? GROUP BY item_id";
+
+// Calculate burn rate (items per minute) based on the sliding window
+double minuteRate = totalConsumed / (double) (24 * 60);
+
+if (minuteRate > 0) {
+    // Forecast time to depletion
+    double minutesOfStockLeft = item.getQuantity() / minuteRate;
+
+    // Trigger recommendation if stock will run out within 24 hours
+    if (minutesOfStockLeft < 1440.0) {
+        // Add recommendation logic...
+    }
+}
+            </code></pre>
             
             <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%202%3A%20Algorithms%20and%20Data%20Structure" class="btn">View Full Source</a>
         </section>
