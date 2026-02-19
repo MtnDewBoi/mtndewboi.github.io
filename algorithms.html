@@ -36,28 +36,28 @@
 
             <h3>Dynamic Sorting Implementation</h3>
             <pre><code class="language-java">
-<span class="hljs-comment">/**
+/**
  * Updates the header text to show arrows indicating sort direction.
- */</span>
-<span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateSortIndicators</span><span class="hljs-params">()</span> {
-    <span class="hljs-type">InventoryViewModel.SortCriteria</span> <span class="hljs-variable">criteria</span> <span class="hljs-operator">=</span> inventoryViewModel.getCurrentSortCriteria();
-    <span class="hljs-type">InventoryViewModel.SortOrder</span> <span class="hljs-variable">order</span> <span class="hljs-operator">=</span> inventoryViewModel.getCurrentSortOrder();
+ */
+private void updateSortIndicators() {
+    InventoryViewModel.SortCriteria criteria = inventoryViewModel.getCurrentSortCriteria();
+    InventoryViewModel.SortOrder order = inventoryViewModel.getCurrentSortOrder();
 
-    <span class="hljs-comment">// Reset all headers to original text</span>
-    <span class="hljs-keyword">if</span> (headerName != <span class="hljs-literal">null</span>) headerName.setText(originalNameText);
-    <span class="hljs-keyword">if</span> (headerQuantity != <span class="hljs-literal">null</span>) headerQuantity.setText(originalQuantityText);
-    <span class="hljs-keyword">if</span> (headerRequired != <span class="hljs-literal">null</span>) headerRequired.setText(originalRequiredText);
+    // Reset all headers to original text
+    if (headerName != null) headerName.setText(originalNameText);
+    if (headerQuantity != null) headerQuantity.setText(originalQuantityText);
+    if (headerRequired != null) headerRequired.setText(originalRequiredText);
 
-    <span class="hljs-keyword">if</span> (order == InventoryViewModel.SortOrder.NONE) <span class="hljs-keyword">return</span>;
+    if (order == InventoryViewModel.SortOrder.NONE) return;
 
-    <span class="hljs-type">String</span> <span class="hljs-variable">arrow</span> <span class="hljs-operator">=</span> (order == InventoryViewModel.SortOrder.ASC) ? <span class="hljs-string">" ▲"</span> : <span class="hljs-string">" ▼"</span>;
-    <span class="hljs-type">TextView</span> <span class="hljs-variable">targetHeader</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;
+    String arrow = (order == InventoryViewModel.SortOrder.ASC) ? " ▲" : " ▼";
+    TextView targetHeader = null;
 
-    <span class="hljs-keyword">if</span> (criteria == InventoryViewModel.SortCriteria.NAME) targetHeader = headerName;
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (criteria == InventoryViewModel.SortCriteria.QUANTITY) targetHeader = headerQuantity;
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (criteria == InventoryViewModel.SortCriteria.REQUIRED) targetHeader = headerRequired;
+    if (criteria == InventoryViewModel.SortCriteria.NAME) targetHeader = headerName;
+    else if (criteria == InventoryViewModel.SortCriteria.QUANTITY) targetHeader = headerQuantity;
+    else if (criteria == InventoryViewModel.SortCriteria.REQUIRED) targetHeader = headerRequired;
 
-    <span class="hljs-keyword">if</span> (targetHeader != <span class="hljs-literal">null</span>) targetHeader.setText(targetHeader.getText() + arrow);
+    if (targetHeader != null) targetHeader.setText(targetHeader.getText() + arrow);
 }
             </code></pre>
             
@@ -68,5 +68,7 @@
     <footer>
         <p>&copy; 2026 ePortfolio. Hosted on GitHub Pages.</p>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
 </body>
 </html>
