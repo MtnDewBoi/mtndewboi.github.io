@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Design - Integrated Inventory Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Software Design & Engineering</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="code-review.html">Code Review</a></li>
+                    <li><a href="algorithms.html">Algorithms</a></li>
+                    <li><a href="databases.html">Databases</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Course Outcome: Design and Maintainability</h2>
+            <p>
+                <strong>Outcome:</strong> Employ software engineering and design strategies to create a maintainable, adaptable, and user-friendly application.
+            </p>
+            <p>
+                To improve the application's usability across different devices, I implemented a responsive design fix in <code>AddItemActivity.java</code>. 
+                Originally, input fields would stretch uncomfortably wide on tablet screens. I introduced a programmatic check for screen width 
+                to constrain these views, ensuring a polished look on both phones and tablets.
+            </p>
+            
+            <h3>Responsive Layout Logic</h3>
+            <pre><code>
+// Fix for tablet layout: restrict width of input fields and buttons
+if (getResources().getConfiguration().screenWidthDp >= 600) {
+    int widthPixels = (int) (400 * getResources().getDisplayMetrics().density);
+    adjustViewWidth(itemNameEditText, widthPixels);
+    adjustViewWidth(itemQuantityEditText, widthPixels);
+    adjustViewWidth(requiredItemQuantityEditText, widthPixels);
+    adjustViewWidth(saveItemButton, widthPixels);
+    adjustViewWidth(goBackButton, widthPixels);
+    adjustViewWidth(deleteItemButton, widthPixels);
+}
+
+/**
+ * Helper method to adjust view width and center it for tablets.
+ */
+private void adjustViewWidth(View view, int width) {
+    ViewGroup.LayoutParams params = view.getLayoutParams();
+    if (params != null) {
+        params.width = width;
+        if (params instanceof android.widget.LinearLayout.LayoutParams) {
+            ((android.widget.LinearLayout.LayoutParams) params).gravity = android.view.Gravity.CENTER_HORIZONTAL;
+        }
+        // ... additional layout params handling
+        view.setLayoutParams(params);
+    }
+}
+            </code></pre>
+
+            <h3>Centralized Theming</h3>
+            <p>
+                I also refactored the application to use a centralized <code>ThemeUtils</code> class. This allows for consistent color application 
+                and supports dynamic theme switching (Gray, Blue, Green) and Dark Mode compatibility throughout the app, significantly reducing code duplication.
+            </p>
+            <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%201%3A%20Software%20Design%20and%20Engineering" class="btn">View Full Source</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ePortfolio. Hosted on GitHub Pages.</p>
+    </footer>
+</body>
+</html>
