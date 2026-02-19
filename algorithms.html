@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithms - Integrated Inventory Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Algorithms & Data Structures</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="code-review.html">Code Review</a></li>
+                    <li><a href="software-design.html">Software Design</a></li>
+                    <li><a href="databases.html">Databases</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Course Outcome: Algorithmic Efficiency</h2>
+            <p>
+                <strong>Outcome:</strong> Design and evaluate computing solutions that solve a given problem using algorithmic principles and computer science practices.
+            </p>
+            <p>
+                Efficient data retrieval is critical for inventory management. I implemented a sorting algorithm within the <code>OverviewActivity</code> 
+                that allows users to dynamically sort the inventory list by Name, Quantity, or Required Stock. This logic toggles between ascending 
+                and descending orders and updates the UI indicators accordingly.
+            </p>
+
+            <h3>Dynamic Sorting Implementation</h3>
+            <pre><code>
+/**
+ * Updates the header text to show arrows indicating sort direction.
+ */
+private void updateSortIndicators() {
+    InventoryViewModel.SortCriteria criteria = inventoryViewModel.getCurrentSortCriteria();
+    InventoryViewModel.SortOrder order = inventoryViewModel.getCurrentSortOrder();
+
+    // Reset all headers to original text
+    if (headerName != null) headerName.setText(originalNameText);
+    if (headerQuantity != null) headerQuantity.setText(originalQuantityText);
+    if (headerRequired != null) headerRequired.setText(originalRequiredText);
+
+    if (order == InventoryViewModel.SortOrder.NONE) return;
+
+    String arrow = (order == InventoryViewModel.SortOrder.ASC) ? " ▲" : " ▼";
+    TextView targetHeader = null;
+
+    if (criteria == InventoryViewModel.SortCriteria.NAME) targetHeader = headerName;
+    else if (criteria == InventoryViewModel.SortCriteria.QUANTITY) targetHeader = headerQuantity;
+    else if (criteria == InventoryViewModel.SortCriteria.REQUIRED) targetHeader = headerRequired;
+
+    if (targetHeader != null) targetHeader.setText(targetHeader.getText() + arrow);
+}
+            </code></pre>
+            
+            <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%202%3A%20Algorithms%20and%20Data%20Structure" class="btn">View Full Source</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ePortfolio. Hosted on GitHub Pages.</p>
+    </footer>
+</body>
+</html>
