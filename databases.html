@@ -103,8 +103,8 @@
             <p>
                 The original database was too simple, it only knew how many items you had <em>right now</em>. 
                 I upgraded it to <strong>Version 2</strong> by adding a history table called <code>usage_log</code>.
-                This table stores the <code>item_id</code>, the <code>change_amount</code> (e.g., -5 for usage, +10 for restock), and the <code>timestamp</code>.
-                This allows us to run aggregation queries, such as <code>SELECT SUM(change_amount) ...</code>, to determine total usage over specific timeframes.
+                This table stores the <code>item_id</code>, the <code>change_amount</code>, and the <code>timestamp</code>.
+                This allows us to run aggregation queries, such as <code>SELECT SUM(change_amount)</code>, to determine total usage over specific timeframes.
             </p>
 
             <ul>
@@ -112,12 +112,21 @@
                 <li><strong>History Tracking:</strong> Every time an item is added or removed, it is written down. This lets us see past trends and undo mistakes.</li>
             </ul>
             <pre><code class="language-sql">
+// DatabaseHelper.java
+                
+-- Updated Table for setting unique item ID
+private static final String CREATE_INVENTORY_TABLE = "CREATE TABLE " + TABLE_INVENTORY + "(" +
+        COLUMN_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        COLUMN_ITEM_NAME + " TEXT NOT NULL, " +
+        COLUMN_ITEM_QUANTITY + " INTEGER NOT NULL, " +
+        COLUMN_ITEM_REQUIREDINVENTORY + " INTEGER NOT NULL" + ")";
+                
 -- New Table for Tracking Usage History (v2)
-CREATE TABLE usage_log (
-    log_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    item_id INTEGER NOT NULL, -- Foreign Key
-    change_amount INTEGER NOT NULL,
-    timestamp INTEGER NOT NULL
+private static final String CREATE_USAGE_LOG_TABLE = "CREATE TABLE " + TABLE_USAGE_LOG + "(" +
+        COLUMN_LOG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        COLUMN_LOG_ITEM_ID + " INTEGER NOT NULL, " +
+        COLUMN_LOG_CHANGE + " INTEGER NOT NULL, " +
+        COLUMN_LOG_TIMESTAMP + " INTEGER NOT NULL" + ")";
 );
             </code></pre>
 
