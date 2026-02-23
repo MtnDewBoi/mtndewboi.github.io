@@ -94,9 +94,10 @@
 
             <h3>Reflection on the Process</h3>
             <p>
-                <strong>Learning & Challenges:</strong> I learned how to handle database versioning using `onUpgrade`. A challenge was ensuring that adding the new 
-                history table didn't break the existing app functionality. I incorporated feedback by adding strict validation to prevent users from entering 
-                duplicate item names, which ensures data integrity.
+                <strong>Learning & Challenges:</strong> I adopted a <strong>security mindset</strong> by assuming all user input is potentially malicious. 
+                I defined an approach where all data is <strong>explicitly validated</strong> before touching the database to eradicate potential vulnerabilities.
+                Furthermore, the schema design considers <strong>future changes</strong>; by normalizing the data into relational tables, the system can easily accommodate 
+                new features like "User Accounts" or "Multi-location Inventory" without breaking existing functionality.
             </p>
             <p><strong>Course Outcomes Met:</strong></p>
             <ul>
