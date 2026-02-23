@@ -127,29 +127,73 @@ CREATE TABLE usage_log (
                 committing changes to the database, preventing data corruption.
             </p>
             <pre><code class="language-java">
+// AddItemActivity.java
+
 /**
  * Handles the process of adding or updating an item in the database.
  */
 private void addItemToInventory() {
     final String itemName = itemNameEditText.getText().toString().trim();
-    final String itemQuantityStr = itemQuantityEditText.getText().toString().trim();
+    final String itemQuantityStr = itemQuantityEditText.getText().toString().trim().replace(",", "");
+    final String requiredItemQuantityStr = requiredItemQuantityEditText.getText().toString().trim().replace(",", "");
 
-    // Validate for empty fields
-    if (itemName.isEmpty() || itemQuantityStr.isEmpty()) {
+    if (itemName.isEmpty() || itemQuantityStr.isEmpty() || requiredItemQuantityStr.isEmpty()) {
         Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
         return;
     }
 
-    // Validate for duplicate names in "Add" mode
-    if (editingItemId == -1) { // -1 indicates "Add" mode
-        final InventoryItem existingItem = dbHelper.getItemByName(itemName);
-        if (existingItem != null) {
+    long itemQuantity;
+    long requiredInventory;
+    try {
+        itemQuantity = Long.parseLong(itemQuantityStr);
+        requiredInventory = Long.parseLong(requiredItemQuantityStr);
+        if (itemQuantity < 0 || requiredInventory < 0) {
+            Toast.makeText(this, "Quantity and Required Inventory cannot be negative.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    } catch (final NumberFormatException e) {
+        Toast.makeText(this, "Quantity and Required Inventory must be valid numbers.", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    // Check for duplicate name
+    final InventoryItem existingItem = inventoryViewModel.getItemByName(itemName);
+    if (existingItem != null) {
+        if (editingItemId == -1) {
+            // Adding new item, name taken
+            Toast.makeText(this, "Item name already exists. Please use the Edit button on the inventory screen.", Toast.LENGTH_LONG).show();
+            return;
+        } else if (existingItem.getId() != editingItemId) {
+            // Editing item, name taken by another item
             Toast.makeText(this, "Item name already exists.", Toast.LENGTH_LONG).show();
             return;
         }
     }
-    
-    // ... proceed with adding or updating item ...
+
+    boolean success = false;
+    String toastMessage = "";
+
+    if (editingItemId != -1) {
+        // **EDIT MODE** - Update existing item details
+        success = inventoryViewModel.updateItemDetails(editingItemId, itemName, itemQuantity, requiredInventory);
+        toastMessage = "Item '" + itemName + "' updated successfully.";
+    } else {
+        // **ADD MODE** - Add a new item
+        success = inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
+        toastMessage = "New item '" + itemName + "' added successfully.";
+    }
+
+    if (success) {
+        Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
+        // Navigate back to the OverviewActivity and refresh the list
+        final Intent intent = new Intent(AddItemActivity.this, OverviewActivity.class);
+        // These flags ensure the OverviewActivity is at the top and will refresh its data in onResume
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    } else {
+        Toast.makeText(this, "Operation failed. Database error.", Toast.LENGTH_LONG).show();
+    }
 }
             </code></pre>
 }
@@ -161,7 +205,7 @@ private void addItemToInventory() {
                 This ensures that sensitive information (such as user passwords for the login screen) is never stored in plain text.
             </p>
             <pre><code class="language-java">
-// From UserRepository.java
+// UserRepository.java
 
 /**
  * Hashes a password using SHA-256 with an optional salt.
