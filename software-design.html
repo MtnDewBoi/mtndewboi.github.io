@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Databases - Integrated Inventory Management</title>
+    <title>Software Design - Integrated Inventory Management</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/androidstudio.min.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>Databases</h1>
+            <h1>Software Design & Engineering</h1>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -26,84 +26,114 @@
     <main class="container">
         <section>
             <h2>Narrative & Reflection</h2>
-
-            <ul>
-                <li><strong>Original:</strong> Single table (`inventory`). No history tracking. Loose input validation allowing bad data.</li>
-                <li><strong>Enhanced:</strong> Relational Schema (Added `usage_log` table linked by Foreign Key). <strong>Event Sourcing</strong> to track every change. Strict input validation (Duplicate name checks).</li>
-            </ul>
+            
+            <div class="artifact-comparison">
+                <div class="artifact-card original">
+                    <span class="artifact-label"><i class="fas fa-clock-rotate-left"></i> Original Artifact</span>
+                    <h3>CS 360 Version</h3>
+                    <p>The original application with a monolithic structure and rigid UI design.</p>
+                    <div class="placeholder-box" style="text-align: left; padding: 1rem;">
+                        <p><strong>Artifact:</strong> Original Inventory App (CS 360)</p>
+                    </div>
+                    <h4 class="mt-2">Original Capabilities</h4>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Monolithic "God Activity" pattern</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Tightly coupled UI & Database</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Hardcoded colors and strings</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Fixed, non-responsive layout</li>
+                    </ul>
+                </div>
+                <div class="artifact-card enhanced">
+                    <span class="artifact-label"><i class="fas fa-sparkles"></i> Enhanced Artifact</span>
+                    <h3>CS 499 Enhanced Version</h3>
+                    <p>The enhanced application featuring MVVM architecture and responsive design.</p>
+                    <div class="placeholder-box" style="text-align: left; padding: 1rem;">
+                        <p><strong>Enhancement:</strong> Software Design & Engineering</p>
+                    </div>
+                    <h4 class="mt-2">Enhanced Capabilities</h4>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> MVVM Architecture Pattern</li>
+                        <li><i class="fas fa-check-circle"></i> Responsive Tablet Layouts</li>
+                        <li><i class="fas fa-check-circle"></i> Centralized Dynamic Theming</li>
+                        <li><i class="fas fa-check-circle"></i> Separation of Concerns</li>
+                        <li><i class="fas fa-check-circle"></i> Lifecycle-Aware Components</li>
+                    </ul>
+                </div>
+            </div>
 
             <h3>Reflection on the Process</h3>
             <p>
-                <strong>Learning & Challenges:</strong> I learned how to handle database versioning using `onUpgrade`. A challenge was ensuring that adding the new 
-                history table didn't break the existing app functionality. I incorporated feedback by adding strict validation to prevent users from entering 
-                duplicate item names, which ensures data integrity.
+                <strong>Learning & Challenges:</strong> The biggest challenge was untangling the tight coupling in the original code. I learned how critical the 
+                ViewModel component is for Android lifecycle management. Initially, rotating the screen would wipe user data; implementing the ViewModel solved this.
+                I incorporated feedback from the code review which highlighted the lack of accessibility features, leading to the creation of the High Contrast theme.
             </p>
             <p>
-                <strong>Course Outcomes:</strong> I <strong>fully met</strong> the outcome to "implement and analyze database solutions." 
-                The addition of the history table and the validation logic ensures the data is both secure and reliable.
+                <strong>Course Outcomes:</strong> I <strong>fully met</strong> the outcome to "employ software engineering and design strategies." 
+                By implementing standard patterns like MVVM and Singleton, I ensured the application is adaptable and maintainable.
             </p>
 
             <hr>
 
-            <h3>Upgrading the Database</h3>
+            <h3>Better App Structure</h3>
             <p>
-                The original database was too simple, it only knew how many items you had <em>right now</em>. 
-                I upgraded it to <strong>Version 2</strong> by adding a history table called <code>usage_log</code>.
+                <strong>The Problem:</strong> The original code was messy. The code that controlled the screen was mixed directly with the code that saved data. 
+                This meant that if you rotated your phone, you might lose what you were typing, and it was very hard to fix bugs.
             </p>
-
-            <ul>
-                <li><strong>Better Organization:</strong> The logs are linked to items by their ID, so changing an item's name doesn't break the history.</li>
-                <li><strong>History Tracking:</strong> Every time an item is added or removed, it is written down. This lets us see past trends and undo mistakes.</li>
-            </ul>
-            <pre><code class="language-sql">
--- New Table for Tracking Usage History (v2)
-CREATE TABLE usage_log (
-    log_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    item_id INTEGER NOT NULL, -- Foreign Key
-    change_amount INTEGER NOT NULL,
-    timestamp INTEGER NOT NULL
-);
-            </code></pre>
-
-            <h3>Secure Database Operations</h3>
             <p>
-                In <code>AddItemActivity.java</code>, the application checks for duplicate item names and ensures numeric values are valid before 
-                committing changes to the database, preventing data corruption.
+                <strong>The Solution:</strong> I reorganized the app using a standard pattern called <strong>MVVM</strong>. 
+                Now, a separate "ViewModel" holds the data. If the screen rotates, the data stays safe because it isn't stuck to the screen layout anymore.
             </p>
             <pre><code class="language-java">
+// Original: The screen talks directly to the database (Bad)
+dbHelper = new DatabaseHelper(this);
+dbHelper.addItem(itemName, itemQuantity, requiredInventory);
+
+// Improved: The screen asks the ViewModel to handle it (Good)
+inventoryViewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
+inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
+            </code></pre>
+
+            <p>
+                To improve the application's usability across different devices, I implemented a responsive design fix in <code>AddItemActivity.java</code>. 
+                Originally, input fields would stretch uncomfortably wide on tablet screens. I introduced a programmatic check for screen width 
+                to constrain these views, ensuring a polished look on both phones and tablets.
+            </p>
+            
+            <h3>Responsive Layout Logic</h3>
+            <pre><code class="language-java">
+// Fix for tablet layout: restrict width of input fields and buttons
+if (getResources().getConfiguration().screenWidthDp >= 600) {
+    int widthPixels = (int) (400 * getResources().getDisplayMetrics().density);
+    adjustViewWidth(itemNameEditText, widthPixels);
+    adjustViewWidth(itemQuantityEditText, widthPixels);
+    adjustViewWidth(requiredItemQuantityEditText, widthPixels);
+    adjustViewWidth(saveItemButton, widthPixels);
+    adjustViewWidth(goBackButton, widthPixels);
+    adjustViewWidth(deleteItemButton, widthPixels);
+}
+
 /**
- * Handles the process of adding or updating an item in the database.
+ * Helper method to adjust view width and center it for tablets.
  */
-private void addItemToInventory() {
-    final String itemName = itemNameEditText.getText().toString().trim();
-    // ... parsing logic ...
-
-    // Check for duplicate name to ensure data integrity
-    final InventoryItem existingItem = inventoryViewModel.getItemByName(itemName);
-    if (existingItem != null) {
-        if (editingItemId == -1) {
-            // Adding new item, name taken
-            Toast.makeText(this, "Item name already exists...", Toast.LENGTH_LONG).show();
-            return;
-        } else if (existingItem.getId() != editingItemId) {
-            // Editing item, name taken by another item
-            Toast.makeText(this, "Item name already exists.", Toast.LENGTH_LONG).show();
-            return;
+private void adjustViewWidth(View view, int width) {
+    ViewGroup.LayoutParams params = view.getLayoutParams();
+    if (params != null) {
+        params.width = width;
+        if (params instanceof android.widget.LinearLayout.LayoutParams) {
+            ((android.widget.LinearLayout.LayoutParams) params).gravity = android.view.Gravity.CENTER_HORIZONTAL;
         }
+        // ... additional layout params handling
+        view.setLayoutParams(params);
     }
-
-    boolean success = false;
-    if (editingItemId != -1) {
-        // **EDIT MODE** - Update existing item details
-        success = inventoryViewModel.updateItemDetails(editingItemId, itemName, itemQuantity, requiredInventory);
-    } else {
-        // **ADD MODE** - Add a new item
-        success = inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
-    }
-    // ... UI feedback ...
 }
             </code></pre>
-            <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%203%3A%20Databases" class="btn">View Full Source</a>
+
+            <h3>UI Improvements & Themes</h3>
+            <p>
+                I created a tool called <code>ThemeUtils</code> to handle colors. Instead of hard-coding colors into every file, I can now change the look of the entire app in one place.
+                I also added an <strong>Orders Page</strong> that automatically finds items that are running low, so the user doesn't have to search for them manually.
+            </p>
+            <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%201%3A%20Software%20Design%20and%20Engineering" class="btn">View Full Source</a>
         </section>
     </main>
 
