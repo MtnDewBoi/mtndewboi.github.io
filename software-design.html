@@ -94,9 +94,10 @@
 
             <h3>Reflection on the Process</h3>
             <p>
-                <strong>Learning & Challenges:</strong> The biggest challenge was untangling the tight coupling in the original code. I learned how critical the 
-                ViewModel component is for Android lifecycle management. Initially, rotating the screen would wipe user data; implementing the ViewModel solved this.
-                I incorporated feedback from the code review which highlighted the lack of customizable features, leading to the creation of different UI themes.
+                <strong>Learning & Challenges:</strong> The biggest challenge was untangling the tight coupling in the original code. 
+                I employed <strong>iterative testing techniques</strong> by isolating the business logic in the ViewModel, which allowed me to verify functionality without launching the full Android UI.
+                Adopting the <strong>industry-standard MVVM architecture</strong> involved trade-offs; while it increased the initial file count, it significantly reduced the "God Class" complexity, 
+                making the system modular and easier to maintain for future developers.
             </p>
             <p><strong>Course Outcomes Met:</strong></p>
             <ul>
