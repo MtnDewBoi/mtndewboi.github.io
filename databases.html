@@ -25,17 +25,51 @@
 
     <main class="container">
         <section>
-            <h2>Course Outcome: Data Integrity and Management</h2>
+            <h2>Narrative & Reflection</h2>
+
+            <ul>
+                <li><strong>Original:</strong> Single table (`inventory`). No history tracking. Loose input validation allowing bad data.</li>
+                <li><strong>Enhanced:</strong> Relational Schema (Added `usage_log` table linked by Foreign Key). <strong>Event Sourcing</strong> to track every change. Strict input validation (Duplicate name checks).</li>
+            </ul>
+
+            <h3>Reflection on the Process</h3>
             <p>
-                <strong>Outcome:</strong> Implement and analyze database solutions to ensure data integrity and security.
+                <strong>Learning & Challenges:</strong> I learned how to handle database versioning using `onUpgrade`. A challenge was ensuring that adding the new 
+                history table didn't break the existing app functionality. I incorporated feedback by adding strict validation to prevent users from entering 
+                duplicate item names, which ensures data integrity.
             </p>
             <p>
-                The application relies on a local SQLite database. I enhanced the data management layer by implementing strict validation logic 
-                before any Create or Update operation. In <code>AddItemActivity.java</code>, the application checks for duplicate item names 
-                and ensures numeric values are valid before committing changes to the database, preventing data corruption.
+                <strong>Course Outcomes:</strong> I <strong>fully met</strong> the outcome to "implement and analyze database solutions." 
+                The addition of the history table and the validation logic ensures the data is both secure and reliable.
             </p>
 
+            <hr>
+
+            <h3>Upgrading the Database</h3>
+            <p>
+                The original database was too simple, it only knew how many items you had <em>right now</em>. 
+                I upgraded it to <strong>Version 2</strong> by adding a history table called <code>usage_log</code>.
+            </p>
+
+            <ul>
+                <li><strong>Better Organization:</strong> The logs are linked to items by their ID, so changing an item's name doesn't break the history.</li>
+                <li><strong>History Tracking:</strong> Every time an item is added or removed, it is written down. This lets us see past trends and undo mistakes.</li>
+            </ul>
+            <pre><code class="language-sql">
+-- New Table for Tracking Usage History (v2)
+CREATE TABLE usage_log (
+    log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id INTEGER NOT NULL, -- Foreign Key
+    change_amount INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL
+);
+            </code></pre>
+
             <h3>Secure Database Operations</h3>
+            <p>
+                In <code>AddItemActivity.java</code>, the application checks for duplicate item names and ensures numeric values are valid before 
+                committing changes to the database, preventing data corruption.
+            </p>
             <pre><code class="language-java">
 /**
  * Handles the process of adding or updating an item in the database.
