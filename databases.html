@@ -90,6 +90,7 @@
                 I defined an approach where all data is <strong>explicitly validated</strong> before touching the database to eradicate potential vulnerabilities.
                 Furthermore, the schema design considers <strong>future changes</strong>; by normalizing the data into relational tables, the system can easily accommodate 
                 new features like "User Accounts" or "Multi-location Inventory" without breaking existing functionality.
+                I also verified the schema migration by manually inspecting the database after an upgrade to ensure all existing inventory items were preserved and correctly linked to the new log table.
             </p>
             <p><strong>Course Outcomes Met:</strong></p>
             <ul>
@@ -102,6 +103,8 @@
             <p>
                 The original database was too simple, it only knew how many items you had <em>right now</em>. 
                 I upgraded it to <strong>Version 2</strong> by adding a history table called <code>usage_log</code>.
+                This table stores the <code>item_id</code>, the <code>change_amount</code> (e.g., -5 for usage, +10 for restock), and the <code>timestamp</code>.
+                This allows us to run aggregation queries, such as <code>SELECT SUM(change_amount) ...</code>, to determine total usage over specific timeframes.
             </p>
 
             <ul>
@@ -129,31 +132,61 @@ CREATE TABLE usage_log (
  */
 private void addItemToInventory() {
     final String itemName = itemNameEditText.getText().toString().trim();
-    // ... parsing logic ...
+    final String itemQuantityStr = itemQuantityEditText.getText().toString().trim();
 
-    // Check for duplicate name to ensure data integrity
-    final InventoryItem existingItem = inventoryViewModel.getItemByName(itemName);
-    if (existingItem != null) {
-        if (editingItemId == -1) {
-            // Adding new item, name taken
-            Toast.makeText(this, "Item name already exists...", Toast.LENGTH_LONG).show();
-            return;
-        } else if (existingItem.getId() != editingItemId) {
-            // Editing item, name taken by another item
+    // Validate for empty fields
+    if (itemName.isEmpty() || itemQuantityStr.isEmpty()) {
+        Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    // Validate for duplicate names in "Add" mode
+    if (editingItemId == -1) { // -1 indicates "Add" mode
+        final InventoryItem existingItem = dbHelper.getItemByName(itemName);
+        if (existingItem != null) {
             Toast.makeText(this, "Item name already exists.", Toast.LENGTH_LONG).show();
             return;
         }
     }
+    
+    // ... proceed with adding or updating item ...
+}
+            </code></pre>
+}
+            </code></pre>
 
-    boolean success = false;
-    if (editingItemId != -1) {
-        // **EDIT MODE** - Update existing item details
-        success = inventoryViewModel.updateItemDetails(editingItemId, itemName, itemQuantity, requiredInventory);
-    } else {
-        // **ADD MODE** - Add a new item
-        success = inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
+            <h3>Data Security & Hashing</h3>
+            <p>
+                To further enhance security, I implemented a hashing utility using <strong>SHA-256</strong> with salting. 
+                This ensures that sensitive information (such as user passwords for the login screen) is never stored in plain text.
+            </p>
+            <pre><code class="language-java">
+// From UserRepository.java
+
+/**
+ * Hashes a password using SHA-256 with an optional salt.
+ * @param password The plain text password.
+ * @param salt The salt string (hex), can be null.
+ * @return The hashed password string (hex), or null if hashing fails.
+ */
+private String hashPassword(final String password, final String salt) {
+    try {
+        final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        if (salt != null) {
+            digest.update(salt.getBytes());
+        }
+        final byte[] encodedhash = digest.digest(password.getBytes());
+        final StringBuilder hexString = new StringBuilder();
+        for (byte b : encodedhash) {
+            final String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+        return null;
     }
-    // ... UI feedback ...
 }
             </code></pre>
             <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%203%3A%20Databases" class="btn">View Full Source</a>
