@@ -1,4 +1,4 @@
-# Integrated Inventory Management System - CS 499 Capstone
+# Integrated Inventory Management - CS 499 Capstone
 
 **[View the Full ePortfolio & Documentation Here](https://mtndewboi.github.io)**
 
