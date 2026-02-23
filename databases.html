@@ -27,10 +27,39 @@
         <section>
             <h2>Narrative & Reflection</h2>
 
-            <ul>
-                <li><strong>Original:</strong> Single table (`inventory`). No history tracking. Loose input validation allowing bad data.</li>
-                <li><strong>Enhanced:</strong> Relational Schema (Added `usage_log` table linked by Foreign Key). <strong>Event Sourcing</strong> to track every change. Strict input validation (Duplicate name checks).</li>
-            </ul>
+            <div class="artifact-comparison">
+                <div class="artifact-card original">
+                    <span class="artifact-label"><i class="fas fa-clock-rotate-left"></i> Original Artifact</span>
+                    <h3>CS 360 Version</h3>
+                    <p>The original application with a simple flat-file style database schema.</p>
+                    <div class="placeholder-box" style="text-align: left; padding: 1rem;">
+                        <p><strong>Artifact:</strong> Original Inventory App (CS 360)</p>
+                    </div>
+                    <h4 class="mt-2">Original Capabilities</h4>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Single table schema</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> No historical tracking</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Loose input validation</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Risk of data anomalies</li>
+                    </ul>
+                </div>
+                <div class="artifact-card enhanced">
+                    <span class="artifact-label"><i class="fas fa-sparkles"></i> Enhanced Artifact</span>
+                    <h3>CS 499 Enhanced Version</h3>
+                    <p>The enhanced application with a relational schema and strict integrity enforcement.</p>
+                    <div class="placeholder-box" style="text-align: left; padding: 1rem;">
+                        <p><strong>Enhancement:</strong> Databases</p>
+                    </div>
+                    <h4 class="mt-2">Enhanced Capabilities</h4>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> Normalized Relational Schema (3NF)</li>
+                        <li><i class="fas fa-check-circle"></i> Event Sourcing (Usage Logs)</li>
+                        <li><i class="fas fa-check-circle"></i> Strict Data Integrity Checks</li>
+                        <li><i class="fas fa-check-circle"></i> Secure CRUD Operations</li>
+                        <li><i class="fas fa-check-circle"></i> Database Versioning & Migration</li>
+                    </ul>
+                </div>
+            </div>
 
             <h3>Reflection on the Process</h3>
             <p>
