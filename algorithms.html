@@ -104,28 +104,28 @@
             </p>
 
             <pre><code class="language-java">
+// InventoryViewModel.java
+
 /**
- * Updates the header text to show arrows indicating sort direction.
+ * Sorts the items based on the given criteria.
+ * Toggles sort order if the same criteria is selected again.
+ * Cycle: ASC -> DESC -> NONE -> ASC.
+ *
+ * @param criteria The criteria to sort by (Name, Quantity, etc.).
  */
-private void updateSortIndicators() {
-    InventoryViewModel.SortCriteria criteria = inventoryViewModel.getCurrentSortCriteria();
-    InventoryViewModel.SortOrder order = inventoryViewModel.getCurrentSortOrder();
-
-    // Reset all headers to original text
-    if (headerName != null) headerName.setText(originalNameText);
-    if (headerQuantity != null) headerQuantity.setText(originalQuantityText);
-    if (headerRequired != null) headerRequired.setText(originalRequiredText);
-
-    if (order == InventoryViewModel.SortOrder.NONE) return;
-
-    String arrow = (order == InventoryViewModel.SortOrder.ASC) ? " ▲" : " ▼";
-    TextView targetHeader = null;
-
-    if (criteria == InventoryViewModel.SortCriteria.NAME) targetHeader = headerName;
-    else if (criteria == InventoryViewModel.SortCriteria.QUANTITY) targetHeader = headerQuantity;
-    else if (criteria == InventoryViewModel.SortCriteria.REQUIRED) targetHeader = headerRequired;
-
-    if (targetHeader != null) targetHeader.setText(targetHeader.getText() + arrow);
+public void sortItems(SortCriteria criteria) {
+    if (currentSortCriteria == criteria) {
+        // Cycle: ASC -> DESC -> NONE -> ASC
+        switch (currentSortOrder) {
+            case ASC: currentSortOrder = SortOrder.DESC; break;
+            case DESC: currentSortOrder = SortOrder.NONE; break;
+            case NONE: currentSortOrder = SortOrder.ASC; break;
+        }
+    } else {
+        currentSortCriteria = criteria;
+        currentSortOrder = SortOrder.ASC; // Default to ascending for new criteria
+    }
+    processList();
 }
             </code></pre>
 
@@ -148,24 +148,41 @@ private void updateSortIndicators() {
                 It looks at how many items were used in the last 24 hours and calculates how fast they are being used.
             </p>
             <p>
+                <strong>Design Trade-offs:</strong> I chose to perform the aggregation (summing usage) via SQL rather than fetching all raw logs into memory. 
+                This reduces the memory footprint of the application significantly, especially as the history grows. 
+                Letting the database engine handle the math is more efficient than iterating through objects in Java.
+            </p>
+            <p>
+                <strong>Validation & Edge Cases:</strong> I validated the algorithm by simulating different usage patterns, such as sudden spikes in consumption versus steady usage. 
+                I also handled edge cases like "sparse logs" (where an item hasn't been used in days) by defaulting to a safe state to prevent division-by-zero errors.
+            </p>
+            <p>
                 <strong>How it works:</strong> The app asks the database for the total usage over the last day. 
                 It then does the math to guess when the stock will hit zero. This helps the user order more items before they run out.
             </p>
 
             <pre><code class="language-java">
-// SQL Aggregation: Calculate total consumption per item in the last 24 hours
-String usageQuery = "SELECT item_id, SUM(change_amount) FROM usage_log " +
-        "WHERE change_amount < 0 AND timestamp > ? GROUP BY item_id";
+// InventoryRepository.java
 
-// Calculate burn rate (items per minute) based on the sliding window
-double minuteRate = totalConsumed / (double) (24 * 60);
+for (InventoryItem item : items) {
+    // ...
+    if (!recommendationAdded) {
+        long totalConsumed = usageMap.containsKey(item.getId()) ? usageMap.get(item.getId()) : 0;
+        // Calculate rate per minute based on the 24-hour window
+        double minuteRate = totalConsumed / (double) (24 * 60);
 
-if (minuteRate > 0) {
-    // Forecast time to depletion
-    double minutesOfStockLeft = item.getQuantity() / minuteRate;
+        // If we have usage, check if stock is critically low based on rate
+        if (minuteRate > 0) {
+            double minutesOfStockLeft = (item.getQuantity() > 0) ? item.getQuantity() / minuteRate : 0;
 
-    // Trigger recommendation if stock will run out within 24 hours
-    if (minutesOfStockLeft < 1440.0) {
+            // If less than 24 hours (1440 mins) of stock remaining, recommend ordering
+            if (minutesOfStockLeft < 1440.0) {
+                long suggestedOrder = (long) ((minuteRate * 2880) - item.getQuantity()); // Target 48 hours stock
+                if (suggestedOrder <= 0) suggestedOrder = (long) (minuteRate * 1440); // Ensure positive order
+
+                recommendations.add(/* ... formatted string ... */);
+            }
+        }
     }
 }
             </code></pre>
