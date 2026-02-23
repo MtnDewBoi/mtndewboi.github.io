@@ -108,13 +108,15 @@
                 Now, a separate "ViewModel" holds the data. If the screen rotates, the data stays safe because it isn't stuck to the screen layout anymore.
             </p>
             <pre><code class="language-java">
-// Original: The screen talks directly to the database (Bad)
-dbHelper = new DatabaseHelper(this);
-dbHelper.addItem(itemName, itemQuantity, requiredInventory);
+// From Original IIM App/app/src/main/java/com/example/cs360finalproject/AddItemActivity.java
+dbHelper = new DatabaseHelper(this); // Initialize DatabaseHelper once
+// ...
+success = dbHelper.addItem(itemName, itemQuantity, requiredInventory);
 
-// Improved: The screen asks the ViewModel to handle it (Good)
+// From CS360FinalProject/app/src/main/java/com/example/cs360finalproject/AddItemActivity.java
 inventoryViewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
-inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
+// ...
+success = inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
             </code></pre>
 
             <p>
@@ -125,6 +127,8 @@ inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
             
             <h3>Responsive Layout Logic</h3>
             <pre><code class="language-java">
+// AddItemActivity.java
+
 // Fix for tablet layout: restrict width of input fields and buttons
 if (getResources().getConfiguration().screenWidthDp >= 600) {
     int widthPixels = (int) (400 * getResources().getDisplayMetrics().density);
@@ -146,7 +150,14 @@ private void adjustViewWidth(View view, int width) {
         if (params instanceof android.widget.LinearLayout.LayoutParams) {
             ((android.widget.LinearLayout.LayoutParams) params).gravity = android.view.Gravity.CENTER_HORIZONTAL;
         }
-        // ... additional layout params handling
+        else if (params instanceof android.widget.FrameLayout.LayoutParams) {
+            ((android.widget.FrameLayout.LayoutParams) params).gravity = android.view.Gravity.CENTER_HORIZONTAL;
+        }
+        else if (params instanceof ConstraintLayout.LayoutParams) {
+            ConstraintLayout.LayoutParams constraintParams = (ConstraintLayout.LayoutParams) params;
+            constraintParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+            constraintParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+        }
         view.setLayoutParams(params);
     }
 }
