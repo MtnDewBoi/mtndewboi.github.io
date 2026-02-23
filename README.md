@@ -10,7 +10,7 @@ The capstone project involved a critical evaluation and enhancement of the origi
 
 | Feature Area | Original (CS 360) | Enhanced (CS 499) |
 | :--- | :--- | :--- |
-| **Architecture** | Monolithic "God Activity" | **MVVM (Model-View-ViewModel)** |
+| **Architecture** | Monolithic structure | **MVVM (Model-View-ViewModel)** |
 | **UI/UX** | Fixed, non-responsive layout | Responsive tablet layouts, dynamic theming |
 | **Data Handling** | Direct database calls | Repository pattern, LiveData updates |
 | **Database** | Single flat table, no history | **Relational schema** with `usage_log` for history |
