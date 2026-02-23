@@ -6,6 +6,37 @@
     <title>Algorithms - Integrated Inventory Management</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/androidstudio.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .artifact-comparison {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .artifact-card {
+            flex: 1;
+            min-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .artifact-label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #555;
+            display: block;
+            margin-bottom: 1rem;
+        }
+        .artifact-card.original { border-top: 4px solid #6c757d; }
+        .artifact-card.enhanced { border-top: 4px solid #00ff73; }
+        .feature-list { list-style: none; padding-left: 0; }
+        .feature-list li { margin-bottom: 0.5rem; }
+        .feature-list i { margin-right: 0.5rem; }
+        .artifact-card.original .feature-list i { color: #6c757d; }
+        .artifact-card.enhanced .feature-list i { color: #198754; }
+    </style>
 </head>
 <body>
     <header>
@@ -37,10 +68,10 @@
                     </div>
                     <h4 class="mt-2">Original Capabilities</h4>
                     <ul class="feature-list">
-                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Basic linear search only</li>
-                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> No sorting functionality</li>
-                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> No data visualization</li>
-                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Static data presentation</li>
+                        <li><i class="fas fa-minus-circle"></i> Basic linear search only</li>
+                        <li><i class="fas fa-minus-circle"></i> No sorting functionality</li>
+                        <li><i class="fas fa-minus-circle"></i> No data visualization</li>
+                        <li><i class="fas fa-minus-circle"></i> Static data presentation</li>
                     </ul>
                 </div>
                 <div class="artifact-card enhanced">
@@ -67,11 +98,11 @@
                 I learned how to normalize data ranges to view coordinates. I also learned that sorting in memory (O(N log N)) is often better for user experience 
                 than querying the database repeatedly for small datasets.
             </p>
-            <p>
-                <strong>Course Outcomes:</strong> I <strong>fully met</strong> the outcome to "design and evaluate computing solutions." 
-                The custom graph view demonstrates the application of mathematical principles to solve a visualization problem.
-            </p>
-
+            <p><strong>Course Outcomes Met:</strong></p>
+            <ul>
+                <li><strong>Outcome 3:</strong> Designing and evaluating algorithmic solutions for sorting and data visualization, balancing the trade-offs between memory usage and database I/O.</li>
+                <li><strong>Outcome 4:</strong> Using innovative techniques to implement a custom graphing engine, delivering a specific goal of visualizing inventory trends without external dependencies.</li>
+            </ul>
             <hr>
 
             <h3>Dynamic Sorting Implementation</h3>
