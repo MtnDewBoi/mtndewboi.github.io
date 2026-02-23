@@ -27,10 +27,39 @@
         <section>
             <h2>Narrative & Reflection</h2>
 
-            <ul>
-                <li><strong>Original:</strong> Static list with no sorting. No data visualization or history.</li>
-                <li><strong>Enhanced:</strong> In-memory <strong>TimSort</strong> (via Java Collections). Custom <strong>Linear Interpolation</strong> algorithm for graphs. <strong>Burn-rate calculation</strong>.</li>
-            </ul>
+            <div class="artifact-comparison">
+                <div class="artifact-card original">
+                    <span class="artifact-label"><i class="fas fa-clock-rotate-left"></i> Original Artifact</span>
+                    <h3>CS 360 Version</h3>
+                    <p>The original application with basic list display and no data processing.</p>
+                    <div class="placeholder-box" style="text-align: left; padding: 1rem;">
+                        <p><strong>Artifact:</strong> Original Inventory App (CS 360)</p>
+                    </div>
+                    <h4 class="mt-2">Original Capabilities</h4>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Basic linear search only</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> No sorting functionality</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> No data visualization</li>
+                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Static data presentation</li>
+                    </ul>
+                </div>
+                <div class="artifact-card enhanced">
+                    <span class="artifact-label"><i class="fas fa-sparkles"></i> Enhanced Artifact</span>
+                    <h3>CS 499 Enhanced Version</h3>
+                    <p>The enhanced application with custom sorting, graphing, and predictive logic.</p>
+                    <div class="placeholder-box" style="text-align: left; padding: 1rem;">
+                        <p><strong>Enhancement:</strong> Algorithms & Data Structures</p>
+                    </div>
+                    <h4 class="mt-2">Enhanced Capabilities</h4>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> In-memory TimSort (O(N log N))</li>
+                        <li><i class="fas fa-check-circle"></i> Custom Linear Interpolation Graphing</li>
+                        <li><i class="fas fa-check-circle"></i> Predictive Burn-Rate Analysis</li>
+                        <li><i class="fas fa-check-circle"></i> Real-time filtering logic</li>
+                        <li><i class="fas fa-check-circle"></i> Optimized data aggregation</li>
+                    </ul>
+                </div>
+            </div>
 
             <h3>Reflection on the Process</h3>
             <p>
@@ -114,7 +143,6 @@ if (minuteRate > 0) {
 
     // Trigger recommendation if stock will run out within 24 hours
     if (minutesOfStockLeft < 1440.0) {
-        // Add recommendation logic...
     }
 }
             </code></pre>
