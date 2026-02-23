@@ -6,6 +6,37 @@
     <title>Databases - Integrated Inventory Management</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/androidstudio.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .artifact-comparison {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .artifact-card {
+            flex: 1;
+            min-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .artifact-label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #555;
+            display: block;
+            margin-bottom: 1rem;
+        }
+        .artifact-card.original { border-top: 4px solid #6c757d; }
+        .artifact-card.enhanced { border-top: 4px solid #00ff73; }
+        .feature-list { list-style: none; padding-left: 0; }
+        .feature-list li { margin-bottom: 0.5rem; }
+        .feature-list i { margin-right: 0.5rem; }
+        .artifact-card.original .feature-list i { color: #6c757d; }
+        .artifact-card.enhanced .feature-list i { color: #198754; }
+    </style>
 </head>
 <body>
     <header>
@@ -37,10 +68,10 @@
                     </div>
                     <h4 class="mt-2">Original Capabilities</h4>
                     <ul class="feature-list">
-                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Single table schema</li>
-                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> No historical tracking</li>
-                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Loose input validation</li>
-                        <li><i class="fas fa-minus-circle" style="color: var(--text-muted);"></i> Risk of data anomalies</li>
+                        <li><i class="fas fa-minus-circle"></i> Single table schema</li>
+                        <li><i class="fas fa-minus-circle"></i> No historical tracking</li>
+                        <li><i class="fas fa-minus-circle"></i> Loose input validation</li>
+                        <li><i class="fas fa-minus-circle"></i> Risk of data anomalies</li>
                     </ul>
                 </div>
                 <div class="artifact-card enhanced">
@@ -67,11 +98,11 @@
                 history table didn't break the existing app functionality. I incorporated feedback by adding strict validation to prevent users from entering 
                 duplicate item names, which ensures data integrity.
             </p>
-            <p>
-                <strong>Course Outcomes:</strong> I <strong>fully met</strong> the outcome to "implement and analyze database solutions." 
-                The addition of the history table and the validation logic ensures the data is both secure and reliable.
-            </p>
-
+            <p><strong>Course Outcomes Met:</strong></p>
+            <ul>
+                <li><strong>Outcome 4:</strong> Using well-founded database techniques to implement a normalized schema that supports historical tracking and complex queries.</li>
+                <li><strong>Outcome 5:</strong> Developing a security mindset, anticipating potential exploits through strict input validation and integrity checks to ensure the privacy and security of the stored data.</li>
+            </ul>
             <hr>
 
             <h3>Upgrading the Database</h3>
