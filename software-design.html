@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Software Design - Integrated Inventory Management</title>
+    <title>Databases - Integrated Inventory Management</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/androidstudio.min.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>Software Design & Engineering</h1>
+            <h1>Databases</h1>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -25,51 +25,85 @@
 
     <main class="container">
         <section>
-            <h2>Course Outcome: Design and Maintainability</h2>
-            <p>
-                <strong>Outcome:</strong> Employ software engineering and design strategies to create a maintainable, adaptable, and user-friendly application.
-            </p>
-            <p>
-                To improve the application's usability across different devices, I implemented a responsive design fix in <code>AddItemActivity.java</code>. 
-                Originally, input fields would stretch uncomfortably wide on tablet screens. I introduced a programmatic check for screen width 
-                to constrain these views, ensuring a polished look on both phones and tablets.
-            </p>
-            
-            <h3>Responsive Layout Logic</h3>
-            <pre><code class="language-java">
-// Fix for tablet layout: restrict width of input fields and buttons
-if (getResources().getConfiguration().screenWidthDp >= 600) {
-    int widthPixels = (int) (400 * getResources().getDisplayMetrics().density);
-    adjustViewWidth(itemNameEditText, widthPixels);
-    adjustViewWidth(itemQuantityEditText, widthPixels);
-    adjustViewWidth(requiredItemQuantityEditText, widthPixels);
-    adjustViewWidth(saveItemButton, widthPixels);
-    adjustViewWidth(goBackButton, widthPixels);
-    adjustViewWidth(deleteItemButton, widthPixels);
-}
+            <h2>Narrative & Reflection</h2>
 
-/**
- * Helper method to adjust view width and center it for tablets.
- */
-private void adjustViewWidth(View view, int width) {
-    ViewGroup.LayoutParams params = view.getLayoutParams();
-    if (params != null) {
-        params.width = width;
-        if (params instanceof android.widget.LinearLayout.LayoutParams) {
-            ((android.widget.LinearLayout.LayoutParams) params).gravity = android.view.Gravity.CENTER_HORIZONTAL;
-        }
-        // ... additional layout params handling
-        view.setLayoutParams(params);
-    }
-}
+            <ul>
+                <li><strong>Original:</strong> Single table (`inventory`). No history tracking. Loose input validation allowing bad data.</li>
+                <li><strong>Enhanced:</strong> Relational Schema (Added `usage_log` table linked by Foreign Key). <strong>Event Sourcing</strong> to track every change. Strict input validation (Duplicate name checks).</li>
+            </ul>
+
+            <h3>Reflection on the Process</h3>
+            <p>
+                <strong>Learning & Challenges:</strong> I learned how to handle database versioning using `onUpgrade`. A challenge was ensuring that adding the new 
+                history table didn't break the existing app functionality. I incorporated feedback by adding strict validation to prevent users from entering 
+                duplicate item names, which ensures data integrity.
+            </p>
+            <p>
+                <strong>Course Outcomes:</strong> I <strong>fully met</strong> the outcome to "implement and analyze database solutions." 
+                The addition of the history table and the validation logic ensures the data is both secure and reliable.
+            </p>
+
+            <hr>
+
+            <h3>Upgrading the Database</h3>
+            <p>
+                The original database was too simple, it only knew how many items you had <em>right now</em>. 
+                I upgraded it to <strong>Version 2</strong> by adding a history table called <code>usage_log</code>.
+            </p>
+
+            <ul>
+                <li><strong>Better Organization:</strong> The logs are linked to items by their ID, so changing an item's name doesn't break the history.</li>
+                <li><strong>History Tracking:</strong> Every time an item is added or removed, it is written down. This lets us see past trends and undo mistakes.</li>
+            </ul>
+            <pre><code class="language-sql">
+-- New Table for Tracking Usage History (v2)
+CREATE TABLE usage_log (
+    log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id INTEGER NOT NULL, -- Foreign Key
+    change_amount INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL
+);
             </code></pre>
 
-            <h3>Centralized Theming</h3>
+            <h3>Secure Database Operations</h3>
             <p>
-                I also refactored the application to use a centralized <code>ThemeUtils</code> class. This allows for consistent color application 
-                and supports dynamic theme switching (Gray, Blue, Green) and Dark Mode compatibility throughout the app, significantly reducing code duplication.
+                In <code>AddItemActivity.java</code>, the application checks for duplicate item names and ensures numeric values are valid before 
+                committing changes to the database, preventing data corruption.
             </p>
-            <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%201%3A%20Software%20Design%20and%20Engineering" class="btn">View Full Source</a>
+            <pre><code class="language-java">
+/**
+ * Handles the process of adding or updating an item in the database.
+ */
+private void addItemToInventory() {
+    final String itemName = itemNameEditText.getText().toString().trim();
+    // ... parsing logic ...
+
+    // Check for duplicate name to ensure data integrity
+    final InventoryItem existingItem = inventoryViewModel.getItemByName(itemName);
+    if (existingItem != null) {
+        if (editingItemId == -1) {
+            // Adding new item, name taken
+            Toast.makeText(this, "Item name already exists...", Toast.LENGTH_LONG).show();
+            return;
+        } else if (existingItem.getId() != editingItemId) {
+            // Editing item, name taken by another item
+            Toast.makeText(this, "Item name already exists.", Toast.LENGTH_LONG).show();
+            return;
+        }
+    }
+
+    boolean success = false;
+    if (editingItemId != -1) {
+        // **EDIT MODE** - Update existing item details
+        success = inventoryViewModel.updateItemDetails(editingItemId, itemName, itemQuantity, requiredInventory);
+    } else {
+        // **ADD MODE** - Add a new item
+        success = inventoryViewModel.addItem(itemName, itemQuantity, requiredInventory);
+    }
+    // ... UI feedback ...
+}
+            </code></pre>
+            <a href="https://github.com/MtnDewBoi/mtndewboi.github.io/tree/main/Enhanced%20Code/Enhancement%203%3A%20Databases" class="btn">View Full Source</a>
         </section>
     </main>
 
