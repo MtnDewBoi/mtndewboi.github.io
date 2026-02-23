@@ -25,17 +25,32 @@
 
     <main class="container">
         <section>
-            <h2>Course Outcome: Algorithmic Efficiency</h2>
+            <h2>Narrative & Reflection</h2>
+
+            <ul>
+                <li><strong>Original:</strong> Static list with no sorting. No data visualization or history.</li>
+                <li><strong>Enhanced:</strong> In-memory <strong>TimSort</strong> (via Java Collections). Custom <strong>Linear Interpolation</strong> algorithm for graphs. <strong>Burn-rate calculation</strong>.</li>
+            </ul>
+
+            <h3>Reflection on the Process</h3>
             <p>
-                <strong>Outcome:</strong> Design and evaluate computing solutions that solve a given problem using algorithmic principles and computer science practices.
+                <strong>Learning & Challenges:</strong> A key challenge was mapping the time (X-axis) and quantity (Y-axis) to the device's screen pixels for the graph. 
+                I learned how to normalize data ranges to view coordinates. I also learned that sorting in memory (O(N log N)) is often better for user experience 
+                than querying the database repeatedly for small datasets.
             </p>
             <p>
-                Efficient data retrieval is critical for inventory management. I implemented a sorting algorithm within the <code>OverviewActivity</code> 
-                that allows users to dynamically sort the inventory list by Name, Quantity, or Required Stock. This logic toggles between ascending 
-                and descending orders and updates the UI indicators accordingly.
+                <strong>Course Outcomes:</strong> I <strong>fully met</strong> the outcome to "design and evaluate computing solutions." 
+                The custom graph view demonstrates the application of mathematical principles to solve a visualization problem.
             </p>
 
+            <hr>
+
             <h3>Dynamic Sorting Implementation</h3>
+            <p>
+                Instead of asking the database to sort the list every time (which is slow), I used Java's built-in sorting tool to do it in the phone's memory.
+                This makes the list sort instantly when you click the headers.
+            </p>
+
             <pre><code class="language-java">
 /**
  * Updates the header text to show arrows indicating sort direction.
@@ -62,18 +77,27 @@ private void updateSortIndicators() {
 }
             </code></pre>
 
-            <h3>Predictive Burn Rate Analysis</h3>
+            <h3>Custom Graphing Logic</h3>
             <p>
-                To further demonstrate algorithmic thinking, I implemented a "burn rate" calculator that forecasts inventory depletion. 
-                Instead of relying solely on static low-stock thresholds, this feature uses a sliding window analysis to compute the rate of consumption per minute over the last 24 hours.
+                To show the history graph, I didn't use a heavy 3rd-party library. Instead, I wrote a custom math formula. 
+                It calculates exactly where to draw lines on the screen based on the time and the quantity of items, so it looks good on any screen size.
             </p>
             <p>
-                <strong>Design & Trade-offs:</strong> I utilized SQL aggregation (<code>SUM</code> with <code>GROUP BY</code>) on the <code>usage_log</code> table to compute consumption rates. 
-                This approach was chosen over in-memory processing to minimize the application's memory footprint and leverage the database engine's optimization, which is crucial as the log history grows.
+                <strong>The Logic:</strong>
+                <br>
+                <code>x_pixel = (timestamp - min_time) / (max_time - min_time) * view_width</code>
+                <br>
+                <code>y_pixel = view_height - ((quantity - min_qty) / (max_qty - min_qty) * view_height)</code>
+            </p>
+
+            <h3>Predicting Future Needs</h3>
+            <p>
+                To show I can solve complex problems, I wrote a "burn rate" calculator. 
+                It looks at how many items were used in the last 24 hours and calculates how fast they are being used.
             </p>
             <p>
-                <strong>Validation & Edge Cases:</strong> The algorithm was validated by simulating different usage patterns, ensuring that sudden spikes are smoothed out by the 24-hour window and that sparse logs (low usage) do not trigger false positives. 
-                The logic defaults to a safe state when usage data is insufficient, preventing erroneous alerts.
+                <strong>How it works:</strong> The app asks the database for the total usage over the last day. 
+                It then does the math to guess when the stock will hit zero. This helps the user order more items before they run out.
             </p>
 
             <pre><code class="language-java">
